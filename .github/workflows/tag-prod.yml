@@ -27,4 +27,4 @@ jobs:
 
       - name: push branch
         run: |
-          git push -f origin prod
+          git push -f origin dev:prod_branch

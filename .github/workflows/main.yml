@@ -2,7 +2,7 @@ name: main
 
 on:
   push:
-    branches: [dev, prod]
+    branches: [dev, prod_branch]
 
   pull_request:
     branches: [dev]
@@ -23,7 +23,7 @@ jobs:
 
           cat dist/app.txt
         env:
-          ENV_NAME: ${{ github.ref == 'refs/heads/prod' && 'production' || 'development' }}
+          ENV_NAME: ${{ github.ref == 'refs/heads/prod_branch' && 'production' || 'development' }}
 
       - uses: actions/upload-artifact@v3
         with:
@@ -33,7 +33,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     needs: [build]
-    if: github.ref != 'refs/heads/prod'
+    if: github.ref != 'refs/heads/prod_branch'
     steps:
       - uses: actions/checkout@v3
         with:
@@ -45,7 +45,7 @@ jobs:
   deploy-production:
     runs-on: ubuntu-latest
     needs: [build]
-    if: github.ref == 'refs/heads/prod'
+    if: github.ref == 'refs/heads/prod_branch'
     steps:
       - uses: actions/download-artifact@v3
         with:
@@ -71,7 +71,7 @@ jobs:
   deploy-preview:
     runs-on: ubuntu-latest
     needs: [build]
-    if: github.ref != 'refs/heads/prod' &&  github.ref != 'refs/heads/dev'
+    if: github.ref != 'refs/heads/prod_branch' &&  github.ref != 'refs/heads/dev'
     steps:
       - uses: actions/download-artifact@v3
         with:
