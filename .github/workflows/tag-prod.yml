@@ -6,7 +6,7 @@ on:
       ref:
         description: |
           Ref to deploy, can be a commit sha or any ref
-        default: "master"
+        default: "dev"
         required: true
         type: string
 
