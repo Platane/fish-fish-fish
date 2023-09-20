@@ -56,10 +56,10 @@ jobs:
       - name: deploy
         run: cat dist/app.txt
 
-  deploy-preview:
+  deploy-development:
     runs-on: ubuntu-latest
-    needs: [build]
-    if: github.ref == 'refs/tags/prod' &&  github.ref != 'refs/heads/dev'
+    needs: [build, test]
+    if: github.ref == 'refs/heads/dev'
     steps:
       - uses: actions/download-artifact@v3
         with:
@@ -69,10 +69,10 @@ jobs:
       - name: deploy
         run: cat dist/app.txt
 
-  deploy-development:
+  deploy-preview:
     runs-on: ubuntu-latest
-    needs: [build, test]
-    if: github.ref == 'refs/heads/dev'
+    needs: [build]
+    if: github.ref != 'refs/tags/prod' &&  github.ref != 'refs/heads/dev'
     steps:
       - uses: actions/download-artifact@v3
         with:
