@@ -24,3 +24,7 @@ jobs:
         run: |
           git tag -f prod
           git push -f --tags
+
+      - name: push branch
+        run: |
+          git push -f origin prod
