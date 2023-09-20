@@ -32,6 +32,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
 
           git remote -v
+          git remote set-url origin git@github.com:Platane/fish-fish-fish.git
 
           git tag -f prod
           git push -f --tags
