@@ -19,7 +19,10 @@ jobs:
       - name: build
         run: |
           mkdir dist
-          echo "my app $ENV_NAME" >> dist/app.txt
+          cat app.txt >> dist/app.txt
+          echo "app: $ENV_NAME" >> dist/app.txt
+
+          cat dist/app.txt
         env:
           ENV_NAME: ${{ github.ref == 'refs/tags/prod' && 'production' || 'development' }}
 
