@@ -1,0 +1,41 @@
+name: deploy prod
+
+on:
+  push:
+    tags: [prod]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: build
+        run: |
+          mkdir dist
+          cat app.txt >> dist/app.txt
+          echo "app: $ENV_NAME" >> dist/app.txt
+
+          cat dist/app.txt
+        env:
+          ENV_NAME: ${{ github.ref == 'refs/tags/prod' && 'production' || 'development' }}
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: frontend-artifact
+          path: dist
+
+  deploy-production:
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: github.ref == 'refs/tags/prod'
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: frontend-artifact
+          path: dist
+
+      - name: deploy
+        run: cat dist/app.txt
