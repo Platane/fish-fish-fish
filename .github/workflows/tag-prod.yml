@@ -1,0 +1,24 @@
+name: tag prod
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: |
+          Ref to deploy, can be a commit sha or any ref
+        default: "master"
+        required: true
+        type: string
+
+jobs:
+  tag-prod:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref }}
+
+      - name: set tag
+        run: |
+          git tag -f prod
+          git push -f --tags
