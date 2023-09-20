@@ -23,6 +23,8 @@ jobs:
 
       - name: set tag
         run: |
+          git config --global user.name "good bot"
+          git config --global user.email good-bot@example.com
           git tag -f prod
           git push -f --tags
 
