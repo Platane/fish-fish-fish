@@ -18,20 +18,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # persist-credentials: false
           ref: ${{ github.event.inputs.ref }}
           token: ${{ secrets.MY_GITHUB_ACTION }}
 
-      - name: setup git
-        run: |
-          git config --global user.name "good bot"
-          git config --global user.email good-bot@example.com
-
       - name: set tag
         run: |
+          git config --local user.name "good bot"
+          git config --local user.email good-bot@example.com
           git tag -f prod
           git push -f --tags
-
-      - name: push branch
-        run: |
-          git push -f origin dev:prod_branch
