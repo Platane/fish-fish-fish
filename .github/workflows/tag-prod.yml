@@ -27,4 +27,6 @@ jobs:
 
       - name: push branch
         run: |
+          git config --global user.name "good bot"
+          git config --global user.email good-bot@example.com
           git push -f origin dev:prod_branch
