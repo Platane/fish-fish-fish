@@ -64,12 +64,7 @@ jobs:
 
       - name: build
         if: steps.get-release.outputs.app-assets-url == ''
-        run: |
-          mkdir dist
-          cat app.txt >> dist/app.txt
-          echo "app: $ENV_NAME" >> dist/app.txt
-
-          cat dist/app.txt
+        run: npm run build
         env:
           ENV_NAME: ${{ github.event.deployment.environment }}
 

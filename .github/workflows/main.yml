@@ -19,15 +19,7 @@ jobs:
           fetch-depth: 0
 
       - name: build
-        run: |
-          mkdir dist
-          cat app.txt >> dist/app.txt
-          echo "app: $ENV_NAME" >> dist/app.txt
-          mkdir dist/assets
-          mkdir dist/assets/0
-          echo "hello" >> dist/assets/0/script.txt
-
-          cat dist/app.txt
+        run: npm run build
         env:
           ENV_NAME: ${{ github.ref == 'refs/tags/prod' && 'production' || 'development' }}
 
@@ -46,7 +38,6 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           commit: ${{ github.sha }}
-          # tag: ${{ github.sha }}
           tag: ${{ steps.app-version.outputs.version }}
           artifacts: app-assets.tar.gz
 
