@@ -31,13 +31,33 @@ jobs:
 
             console.log( JSON.stringify( Object.keys(github.rest.repos) ) )
 
-            const release = await github.rest.repos.getReleaseByTag({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag: context.payload.deployment.sha
-            });
 
-            console.log(release)
+             const r = await github.rest.repos.listReleases({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                per_page: 100
+              });
+              console.log(r)
+
+
+            try{
+
+
+
+
+              const release = await github.rest.repos.getReleaseByTag({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag: context.payload.deployment.sha
+              });
+
+             
+
+
+              console.log(release)
+            }catch(err){
+              core.setOutput('found', 'false');
+            }
 
       - uses: actions/checkout@v3
         with:

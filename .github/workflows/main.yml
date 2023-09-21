@@ -46,7 +46,8 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           commit: ${{ github.sha }}
-          tag: ${{ steps.app-version.outputs.version }}
+          tag: ${{ github.sha }}
+          # tag: ${{ steps.app-version.outputs.version }}
           artifacts: app.tar.gz
 
   test:
