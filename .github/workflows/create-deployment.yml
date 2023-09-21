@@ -25,6 +25,7 @@ jobs:
       - name: create deployment
         uses: actions/github-script@v6
         with:
+          github-token: ${{ secrets.MY_GITHUB_ACTION }}
           script: |
             let { ref, environment } = context.payload.inputs
 
