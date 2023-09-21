@@ -18,14 +18,12 @@ on:
 
 jobs:
   create-deployment:
-    permissions:
-      deployments: write
     runs-on: ubuntu-latest
     steps:
       - name: create deployment
         uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.MY_GITHUB_ACTION }}
+          github-token: ${{ secrets.MY_GITHUB_TOKEN_FOR_DEPLOYMENT }}
           script: |
             let { ref, environment } = context.payload.inputs
 
