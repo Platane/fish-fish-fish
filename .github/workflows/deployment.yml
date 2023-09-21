@@ -31,6 +31,14 @@ jobs:
 
             console.log( JSON.stringify( Object.keys(github.rest.repos) ) )
 
+            const release = await github.rest.repos.getReleaseByTag({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag: context.payload.deployment.sha
+            });
+
+            console.log(release)
+
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
