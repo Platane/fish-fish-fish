@@ -26,15 +26,14 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
+            let { ref,environment } = context.payload.inputs.environment
 
-            console.log(JSON.stringify(Object.keys(github.rest.repos),null,2))
-
-            github.rest.repos.deployments.post({
+            github.rest.repos.createDeployment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               task: "deploy",
               auto_merge: false,
-              ref:context.payload.inputs.ref,
-              environment:context.payload.inputs.environment,
-              production_environment: context.payload.inputs.environment === "production",
+              ref,
+              environment,
+              production_environment: environment === "production",
             });
