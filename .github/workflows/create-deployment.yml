@@ -27,7 +27,7 @@ jobs:
           script: |
             let { ref, environment } = context.payload.inputs
 
-            github.rest.repos.createDeployment({
+            const d = github.rest.repos.createDeployment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               task: "deploy",
@@ -37,3 +37,5 @@ jobs:
               production_environment: environment === "production",
               required_contexts:[] // no commit check is required
             });
+
+            console.log(d)
