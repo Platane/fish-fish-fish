@@ -3,6 +3,6 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "rm -rf dist; mkdir -p dist/assets/0 && cat app.txt >> dist/app.txt && echo \"\napp: $ENV_NAME\" >> dist/app.txt && echo hello >> dist/assets/0/script.txt"
+    "build": "rm -rf dist; mkdir -p dist/assets/0 && cat src/app.txt >> dist/app.txt && echo \"\napp: $ENV_NAME\" >> dist/app.txt && echo hello >> dist/assets/0/script.txt"
   }
 }
