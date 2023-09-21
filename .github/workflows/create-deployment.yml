@@ -27,18 +27,13 @@ jobs:
         with:
           script: |
 
-            console.log(context.payload);
-
-            const ref = "${{ github.event.inputs.ref }}";
-            const environment = "${{ github.event.inputs.environment }}";
 
             github.rest.deployments.post({
-              issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               task: "deploy",
               auto_merge: false,
-              ref,
-              environment,
-              production_environment: environment === "production",
+              ref:context.payload.inputs.ref,
+              environment:context.payload.inputs.environment,
+              production_environment: context.payload.inputs.environment === "production",
             });
