@@ -11,6 +11,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v3
         with:
@@ -26,10 +28,20 @@ jobs:
         env:
           ENV_NAME: ${{ github.ref == 'refs/tags/prod' && 'production' || 'development' }}
 
+      - name: get app version
+        id: app-version
+        run: echo "version=`node ./version.js`" >> "$GITHUB_OUTPUT"
+
       - uses: actions/upload-artifact@v3
         with:
           name: frontend-artifact
           path: dist
+
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: dist
+          commit: ${{ github.sha }}
+          tag: ${{ steps.app-version.outputs.version }}
 
   test:
     runs-on: ubuntu-latest
