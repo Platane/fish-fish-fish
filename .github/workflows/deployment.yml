@@ -15,9 +15,18 @@ jobs:
           github-token: ${{ secrets.MY_GITHUB_TOKEN_FOR_DEPLOYMENT }}
           script: |
 
-            console.log('1 ${{ github.payload.deployment.sha }}','2 ${{ github.deployment.sha }}','3 ${{ github.context.payload.deployment.sha }}')
+            console.log(`
+            - ${{ github.payload.deployment.sha }}
+            - ${{ github.deployment.sha }}
+            - ${{ github.context.payload.deployment.sha }}
+            - ${{ github.context.deployment.sha }}
+            - ${{ github.event.deployment.sha }}
+            - ${{ github.event.payload.deployment.sha }}
+            `)
 
             console.log( JSON.stringify(Object.keys(github.rest.repos),null,2) )
+
+            console.log( context.payload.deployment.id )
 
             github.rest.repos.createDeploymentStatus({
               owner: context.repo.owner,
@@ -41,3 +50,6 @@ jobs:
           cat dist/app.txt
         env:
           ENV_NAME: ${{ github.ref == 'refs/tags/prod' && 'production' || 'development' }}
+
+      - name: deploy
+        run: cat dist/app.txt
