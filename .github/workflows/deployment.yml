@@ -41,7 +41,7 @@ jobs:
               if (release.length === 100) return getRelease(sha, page + 1);
             };
 
-            const release = getRelease(context.payload.deployment.sha);
+            const release = await getRelease(context.payload.deployment.sha);
 
 
             console.log(release);
