@@ -6,16 +6,37 @@ jobs:
   deploy:
     permissions:
       contents: write
+      deployments: write
     runs-on: ubuntu-latest
     steps:
-      - name: get PR to rebase
+      - name: set create deployment status=in_progress
         uses: actions/github-script@v6
         with:
+          github-token: ${{ secrets.MY_GITHUB_TOKEN_FOR_DEPLOYMENT }}
           script: |
+            let { ref, environment } = context.payload.inputs
 
-            console.log( context.payload )
-            console.log( context )
+            console.log( JSON.stringify(Object.keys(github.rest.repos),null,2) )
 
-      - run: |
-          echo ${{ github.context.deployment.id }}
-          echo ${{ github.context.deployment }}
+            github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: "deploy",
+              state: 'in_progress',
+              deployment_id:context.payload.deployment.id
+            });
+
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ context.payload.deployment.sha }}
+
+      - name: build
+        run: |
+          mkdir dist
+          cat app.txt >> dist/app.txt
+          echo "app: $ENV_NAME" >> dist/app.txt
+
+          cat dist/app.txt
+        env:
+          ENV_NAME: ${{ github.ref == 'refs/tags/prod' && 'production' || 'development' }}
