@@ -26,45 +26,44 @@ jobs:
 
       - name: attempt to get the release
         uses: actions/github-script@v6
+        id: get-release
         with:
           script: |
-
-            console.log( JSON.stringify( Object.keys(github.rest.repos) ) )
-
-
-             const r = await github.rest.repos.listReleases({
+            const getRelease = async (sha, page = 0) => {
+              const { data: releases } = await github.rest.repos.listReleases({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                per_page: 100
+                per_page: 100,
+                page,
               });
-              console.log(r)
+              const r = releases.find((r) => r.target_commitish === sha);
+              if (r) return r;
+              if (release.length === 100) return getRelease(sha, page + 1);
+            };
 
+            const release = getRelease(context.payload.deployment.sha);
 
-            try{
-
-
-
-
-              const release = await github.rest.repos.getReleaseByTag({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                tag: context.payload.deployment.sha
-              });
-
-             
-
-
-              console.log(release)
-            }catch(err){
-              core.setOutput('found', 'false');
+            if (release) {
+              const [{ url }] = fetch(await release.assets_url).then((res) => res.json());
+              core.setOutput("app-assets-url", url);
+            } else {
+              core.setOutput("app-assets-url", "");
             }
 
+      - name: get app assets
+        if: steps.get-release.outputs.app-assets-url != ''
+        run: |
+          wget ${ steps.get-release.outputs.app-assets-url } -o app-assets.tar.gz
+          tar -xzv -f dist app-assets.tar.gz
+
       - uses: actions/checkout@v3
+        if: steps.get-release.outputs.app-assets-url == ''
         with:
           fetch-depth: 0
           ref: ${{ github.event.deployment.sha }}
 
       - name: build
+        if: steps.get-release.outputs.app-assets-url == ''
         run: |
           mkdir dist
           cat app.txt >> dist/app.txt
