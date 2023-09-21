@@ -14,7 +14,8 @@ jobs:
         with:
           github-token: ${{ secrets.MY_GITHUB_TOKEN_FOR_DEPLOYMENT }}
           script: |
-            let { ref, environment } = context.payload.inputs
+
+            console.log('1 ${{ github.payload.deployment.sha }}','2 ${{ github.deployment.sha }}','3 ${{ github.context.payload.deployment.sha }}')
 
             console.log( JSON.stringify(Object.keys(github.rest.repos),null,2) )
 
