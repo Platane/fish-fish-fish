@@ -1,0 +1,21 @@
+name: deployment
+
+on: deployment
+
+jobs:
+  deploy:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: get PR to rebase
+        uses: actions/github-script@v6
+        with:
+          script: |
+
+            console.log( context.payload )
+            console.log( context )
+
+      - run: |
+          echo ${{ github.context.deployment.id }}
+          echo ${{ github.context.deployment }}

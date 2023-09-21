@@ -1,0 +1,45 @@
+name: create deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: |
+          Ref to deploy, can be a commit sha or any ref
+        default: dev
+        required: true
+        type: string
+      environment:
+        description: |
+          prod or dev
+        default: dev
+        required: true
+        type: string
+
+jobs:
+  create-deployment:
+    permissions:
+      deployments: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: get PR to rebase
+        uses: actions/github-script@v6
+        with:
+          script: |
+
+            console.log( context.payload )
+
+
+            cont ref = "${{ github.event.inputs.ref }}"
+            const environment = "${{ github.event.inputs.environment }}"
+
+            github.rest.deployments.post({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              task:'deploy',
+              auto_merge: false,
+              ref,
+              environment,
+              production_environment: environment === 'production'
+            })
