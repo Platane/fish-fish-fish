@@ -39,7 +39,7 @@ jobs:
 
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: dist
+          artifacts: "dist/**"
           commit: ${{ github.sha }}
           tag: ${{ steps.app-version.outputs.version }}
 
