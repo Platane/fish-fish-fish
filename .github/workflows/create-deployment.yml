@@ -27,7 +27,7 @@ jobs:
         with:
           script: |
 
-            console.log(Object.keys(github.rest.repos))
+            console.log(JSON.stringify(Object.keys(github.rest.repos),null,2))
 
             github.rest.repos.deployments.post({
               owner: context.repo.owner,
