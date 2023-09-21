@@ -22,14 +22,14 @@ jobs:
       deployments: write
     runs-on: ubuntu-latest
     steps:
-      - name: get PR to rebase
+      - name: create deployment
         uses: actions/github-script@v6
         with:
           script: |
 
-            console.log(Object.keys(github.rest))
-            console.log(github.rest)
-            github.rest.deployments.post({
+            console.log(Object.keys(github.rest.repos))
+
+            github.rest.repos.deployments.post({
               owner: context.repo.owner,
               repo: context.repo.repo,
               task: "deploy",
