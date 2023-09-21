@@ -13,15 +13,14 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            console.log( context )
-
-            const url = "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}";
+            const runUrl = `${context.server_url}/${context.full_name}/actions/runs/${context.runId}`
 
             github.rest.repos.createDeploymentStatus({
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: "in_progress",
               deployment_id: context.payload.deployment.id,
+              log_url: runUrl,
               auto_inactive: false
             });
 
