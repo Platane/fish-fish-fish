@@ -13,7 +13,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const runUrl = `${context.server_url}/${context.full_name}/actions/runs/${context.runId}`
+            const runUrl = `${context.serverUrl}/${context.payload.repository.full_name}/actions/runs/${context.runId}`
 
             github.rest.repos.createDeploymentStatus({
               owner: context.repo.owner,
