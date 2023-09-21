@@ -24,7 +24,7 @@ jobs:
               auto_inactive: false
             });
 
-      - name: attempt to get the release
+      - name: attempt to get the assets from the release
         uses: actions/github-script@v6
         id: get-release
         with:
@@ -44,6 +44,7 @@ jobs:
             const release = await getRelease(context.payload.deployment.sha);
 
             if (release) {
+              console.log(release)
               const url = release.assets[0].browser_download_url
               core.setOutput("app-assets-url", url);
             } else {
@@ -51,23 +52,32 @@ jobs:
             }
 
       - name: get app assets
-        if: steps.get-release.outputs.app-assets-url != ''
+        if: success() && steps.get-release.outputs.app-assets-url != ''
         run: |
           wget ${{ steps.get-release.outputs.app-assets-url }} -O app-assets.tar.gz
           mkdir dist
           tar -xv -f app-assets.tar.gz -C dist
 
       - uses: actions/checkout@v3
-        if: steps.get-release.outputs.app-assets-url == ''
+        if: success() && steps.get-release.outputs.app-assets-url == ''
         with:
           fetch-depth: 0
           ref: ${{ github.event.deployment.sha }}
 
+      - name: attempt to get cached build
+        id: cache-build
+        if: success() && steps.get-release.outputs.app-assets-url == ''
+        uses: actions/cache@v3
+        with:
+          path: dist
+          key: $cache-build-${{ hashFiles('src/**') }}-${{ hashFiles('package-lock.json') }}
+
+      - run: npm install
+        if: success() && steps.get-release.outputs.app-assets-url == '' && steps.cache-build.outputs.cache-hit != 'true'
+
       - name: build
-        if: steps.get-release.outputs.app-assets-url == ''
+        if: success() && steps.get-release.outputs.app-assets-url == '' && steps.cache-build.outputs.cache-hit != 'true'
         run: npm run build
-        env:
-          ENV_NAME: ${{ github.event.deployment.environment }}
 
       - name: deploy
         run: cat dist/app.txt
