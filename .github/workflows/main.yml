@@ -28,20 +28,23 @@ jobs:
         env:
           ENV_NAME: ${{ github.ref == 'refs/tags/prod' && 'production' || 'development' }}
 
-      - name: get app version
-        id: app-version
-        run: echo "version=`node ./version.js`" >> "$GITHUB_OUTPUT"
-
       - uses: actions/upload-artifact@v3
         with:
           name: frontend-artifact
           path: dist
 
+      - name: get app version
+        id: app-version
+        run: echo "version=`node ./version.js`" >> "$GITHUB_OUTPUT"
+
+      - name: bundle dist
+        run: tar -czv -f app.tar.gz  dist/**
+
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: "dist/**"
           commit: ${{ github.sha }}
           tag: ${{ steps.app-version.outputs.version }}
+          artifacts: app.tar.gz
 
   test:
     runs-on: ubuntu-latest
