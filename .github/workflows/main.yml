@@ -41,7 +41,7 @@ jobs:
         run: echo "version=`node ./version.js`" >> "$GITHUB_OUTPUT"
 
       - name: bundle dist
-        run: cd dist ; tar -czv -f ../app.tar.gz .
+        run: cd dist ; tar -czv -f ../app.tar.gz *
 
       - uses: ncipollo/release-action@v1
         with:
