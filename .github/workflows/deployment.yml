@@ -12,34 +12,18 @@ jobs:
       - name: set create deployment status=in_progress
         uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.MY_GITHUB_TOKEN_FOR_DEPLOYMENT }}
           script: |
-
-            console.log(`
-            - ${{ github.payload.deployment.sha }}
-            - ${{ github.deployment.sha }}
-            - ${{ github.context.payload.deployment.sha }}
-            - ${{ github.context.deployment.sha }}
-            - ${{ github.event.deployment.sha }}
-            - ${{ github.event.payload.deployment.sha }}
-            `)
-
-            console.log( JSON.stringify(Object.keys(github.rest.repos),null,2) )
-
-            console.log( context.payload.deployment.id )
-
             github.rest.repos.createDeploymentStatus({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              deployment_id: "deploy",
-              state: 'in_progress',
-              deployment_id:context.payload.deployment.id
+              state: "in_progress",
+              deployment_id: context.payload.deployment.id
             });
 
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          ref: ${{ github.payload.deployment.sha }}
+          ref: ${{ github.event.deployment.sha }}
 
       - name: build
         run: |
@@ -49,7 +33,32 @@ jobs:
 
           cat dist/app.txt
         env:
-          ENV_NAME: ${{ github.ref == 'refs/tags/prod' && 'production' || 'development' }}
+          ENV_NAME: ${{ github.event.deployment.environment }}
 
       - name: deploy
         run: cat dist/app.txt
+
+      - name: set create deployment status=success
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "success",
+              deployment_id: context.payload.deployment.id
+            });
+
+      - name: set create deployment status=failure
+        uses: actions/github-script@v6
+        if: ${{ failure() }}
+        with:
+          script: |
+            github.rest.repos.createDeploymentStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "failure",
+              deployment_id: context.payload.deployment.id,
+              auto_inactive: true,
+              environment_url: "https://example.com"
+            });
