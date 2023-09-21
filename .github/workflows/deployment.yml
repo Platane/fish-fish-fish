@@ -43,13 +43,7 @@ jobs:
 
             const release = await getRelease(context.payload.deployment.sha);
 
-
-            console.log(release);
-
             if (release) {
-
-              console.log(release.assets_url)
-
               const [{ url }] = await fetch(release.assets_url).then((res) => res.json());
               core.setOutput("app-assets-url", url);
             } else {
@@ -59,7 +53,7 @@ jobs:
       - name: get app assets
         if: steps.get-release.outputs.app-assets-url != ''
         run: |
-          wget ${ steps.get-release.outputs.app-assets-url } -o app-assets.tar.gz
+          wget ${{ steps.get-release.outputs.app-assets-url }} -o app-assets.tar.gz
           tar -xzv -f dist app-assets.tar.gz
 
       - uses: actions/checkout@v3
