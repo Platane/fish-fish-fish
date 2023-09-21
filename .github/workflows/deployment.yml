@@ -43,8 +43,14 @@ jobs:
 
             const release = getRelease(context.payload.deployment.sha);
 
+
+            console.log(release);
+
             if (release) {
-              const [{ url }] = await fetch(await release.assets_url).then((res) => res.json());
+
+              console.log(release.assets_url)
+
+              const [{ url }] = await fetch(release.assets_url).then((res) => res.json());
               core.setOutput("app-assets-url", url);
             } else {
               core.setOutput("app-assets-url", "");
