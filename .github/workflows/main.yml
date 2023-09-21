@@ -23,6 +23,9 @@ jobs:
           mkdir dist
           cat app.txt >> dist/app.txt
           echo "app: $ENV_NAME" >> dist/app.txt
+          mkdir dist/assets
+          mkdir dist/assets/0
+          echo "hello" >> dist/assets/0/script.txt
 
           cat dist/app.txt
         env:
@@ -38,7 +41,7 @@ jobs:
         run: echo "version=`node ./version.js`" >> "$GITHUB_OUTPUT"
 
       - name: bundle dist
-        run: tar -czv -f app.tar.gz  dist/**
+        run: cd dist ; tar -czv -f app.tar.gz .
 
       - uses: ncipollo/release-action@v1
         with:
