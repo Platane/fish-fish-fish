@@ -13,11 +13,13 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
+            console.log( context )
             github.rest.repos.createDeploymentStatus({
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: "in_progress",
-              deployment_id: context.payload.deployment.id
+              deployment_id: context.payload.deployment.id,
+              auto_inactive: false
             });
 
       - uses: actions/checkout@v3
@@ -47,6 +49,8 @@ jobs:
               repo: context.repo.repo,
               state: "success",
               deployment_id: context.payload.deployment.id
+              auto_inactive: true,
+              environment_url: "https://example.com"
             });
 
       - name: set create deployment status=failure
@@ -59,6 +63,4 @@ jobs:
               repo: context.repo.repo,
               state: "failure",
               deployment_id: context.payload.deployment.id,
-              auto_inactive: true,
-              environment_url: "https://example.com"
             });
