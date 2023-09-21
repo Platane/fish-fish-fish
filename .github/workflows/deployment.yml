@@ -55,7 +55,7 @@ jobs:
         run: |
           wget ${{ steps.get-release.outputs.app-assets-url }} -o app-assets.tar.gz
           mkdir dist
-          tar -xv -f dist app-assets.tar.gz -C dist
+          tar -xv -f app-assets.tar.gz -C dist
 
       - uses: actions/checkout@v3
         if: steps.get-release.outputs.app-assets-url == ''
