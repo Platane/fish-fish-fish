@@ -28,8 +28,8 @@ jobs:
         if: success() && steps.cache-build.outputs.cache-hit != 'true'
 
       - name: build
-        if: success() && steps.cache-build.outputs.cache-hit != 'true'
         run: npm run build
+        if: success() && steps.cache-build.outputs.cache-hit != 'true'
 
       - uses: actions/upload-artifact@v3
         with:
@@ -45,8 +45,8 @@ jobs:
 
       - name: create release (dev branch only)
         uses: ncipollo/release-action@v1
+        if: success() && github.ref == 'refs/heads/dev'
         with:
-          if: success() && github.ref == 'refs/heads/dev'
           commit: ${{ github.sha }}
           tag: ${{ steps.app-version.outputs.version }}
           artifacts: app-assets.tar.gz
