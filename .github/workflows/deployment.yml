@@ -33,6 +33,7 @@ jobs:
 
       - name: attempt to get the assets from the release
         uses: actions/github-script@v6
+        if: ""
         id: get-release
         with:
           script: |
