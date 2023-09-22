@@ -13,7 +13,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            console.log(context.payload.repository);
+            console.log(context.payload.deployment);
 
             const runUrl = `${context.serverUrl}/${context.payload.repository.full_name}/actions/runs/${context.runId}`
 
@@ -28,8 +28,8 @@ jobs:
 
       - name: print deployment info
         run: |
-          echo "environment:${{ github.event.development.environment }};"
-          echo "bypass_cache:${{ github.event.development.payload.hola }};"
+          echo "environment:${{ github.event.deployment.environment }};"
+          echo "hola:${{ github.event.deployment.payload.hola }};"
 
       - name: attempt to get the assets from the release
         uses: actions/github-script@v6
