@@ -35,7 +35,7 @@ jobs:
               ref,
               environment,
               production_environment: environment === "production",
-              required_contexts:[] // no commit check is required
+              required_contexts:[], // no commit check is required
               payload:{hola:111}
             });
 
